@@ -12,7 +12,7 @@
     "url": "git+https://github.com/l3wi/flashLib.git"
   },
   "keywords": ["payment", "channel", "tangle", "iota"],
-  "files": ["/lib/multisig.js", "/lib/transfer.js"],
+  "files": ["/lib/multisig.js", "/lib/transfer.js", "/lib/constants.js", "/lib/helpers.js"],
   "authors": [
     "Paul Handy <paul@iota.org>",
     "Chris Dukakis <chris.dukakis@iota.org>",
