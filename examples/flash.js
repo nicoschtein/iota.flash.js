@@ -204,9 +204,11 @@ console.log(
 // COMPOSE TX from USER ONE
 
 console.log("Creating Transaction")
-console.log("Sending 200 tokens to ", twoSettlement)
 
-// Create transfer array pointing to USER TWO
+// ------------------------------------------------------------------
+// 1st transfer
+// ------------------------------------------------------------------
+console.log("Sending 200 tokens to ", twoSettlement)
 let transfers = [
   {
     value: 200,
@@ -214,35 +216,83 @@ let transfers = [
   }
 ]
 
-// Create TX
-var bundles = Helpers.createTransaction(oneFlash, transfers, false)
-
-/////////////////////////////////
-/// SIGN BUNDLES
+// create Tx
+let bundles = Helpers.createTransaction(oneFlash, transfers, false)
 
 // Get signatures for the bundles
 let oneSignatures = Helpers.signTransaction(oneFlash, bundles)
-
-// Generate USER TWO'S Singatures
 let twoSignatures = Helpers.signTransaction(twoFlash, bundles)
 
-// Sign bundle with your USER ONE'S signatures
+// Sign bundle with your ignatures
 let signedBundles = transfer.appliedSignatures(bundles, oneSignatures)
-
-// ADD USER TWOS'S signatures to the partially signed bundles
 signedBundles = transfer.appliedSignatures(signedBundles, twoSignatures)
-
-/////////////////////////////////
-/// APPLY SIGNED BUNDLES
 
 // Apply transfers to User ONE
 oneFlash = Helpers.applyTransfers(oneFlash, signedBundles)
-// Save latest channel bundles
 oneFlash.bundles = signedBundles
 
 // Apply transfers to User TWO
 twoFlash = Helpers.applyTransfers(twoFlash, signedBundles)
-// Save latest channel bundles
+twoFlash.bundles = signedBundles
+
+// ------------------------------------------------------------------
+// 2nd transfer
+// ------------------------------------------------------------------
+console.log("Sending 300 tokens to ", twoSettlement)
+transfers = [
+  {
+    value: 300,
+    address: twoSettlement
+  }
+]
+
+// create Tx
+bundles = Helpers.createTransaction(oneFlash, transfers, false)
+
+// Get signatures for the bundles
+oneSignatures = Helpers.signTransaction(oneFlash, bundles)
+twoSignatures = Helpers.signTransaction(twoFlash, bundles)
+
+// Sign bundle with your ignatures
+signedBundles = transfer.appliedSignatures(bundles, oneSignatures)
+signedBundles = transfer.appliedSignatures(signedBundles, twoSignatures)
+
+// Apply transfers to User ONE
+oneFlash = Helpers.applyTransfers(oneFlash, signedBundles)
+oneFlash.bundles = signedBundles
+
+// Apply transfers to User TWO
+twoFlash = Helpers.applyTransfers(twoFlash, signedBundles)
+twoFlash.bundles = signedBundles
+
+// ------------------------------------------------------------------
+// 3rd transfer
+// ------------------------------------------------------------------
+console.log("Sending 500 tokens to ", oneSettlement)
+transfers = [
+  {
+    value: 500,
+    address: oneSettlement
+  }
+]
+
+// create Tx
+bundles = Helpers.createTransaction(twoFlash, transfers, false)
+
+// Get signatures for the bundles
+oneSignatures = Helpers.signTransaction(oneFlash, bundles)
+twoSignatures = Helpers.signTransaction(twoFlash, bundles)
+
+// Sign bundle with your ignatures
+signedBundles = transfer.appliedSignatures(bundles, oneSignatures)
+signedBundles = transfer.appliedSignatures(signedBundles, twoSignatures)
+
+// Apply transfers to User ONE
+oneFlash = Helpers.applyTransfers(oneFlash, signedBundles)
+oneFlash.bundles = signedBundles
+
+// Apply transfers to User TWO
+twoFlash = Helpers.applyTransfers(twoFlash, signedBundles)
 twoFlash.bundles = signedBundles
 
 console.log("Transaction Applied!")
@@ -250,8 +300,6 @@ console.log(
   "Transactable tokens: ",
   oneFlash.flash.deposit.reduce((acc, v) => acc + v)
 )
-
-// TO DO: ADD 2 MORE TXs to demo branching
 
 //////////////////////////////
 // CLOSE Channel
